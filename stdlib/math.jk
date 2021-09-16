@@ -1,0 +1,63 @@
+
+pi = 3.141592653589793
+
+fun sum()
+{ 
+    res = arguments[0]
+    for i = 1; i < arguments?size; i++
+        res += arguments[i]
+    res
+}
+
+fun average()
+{ 
+    res = arguments[0]
+    for i = 1; i < arguments?size; i++
+        res += arguments[i]
+    res/arguments?size
+}
+
+fun mul()
+{ 
+    res = arguments[0]
+    for i = 1; i < arguments?size; i++
+        res *= arguments[i]
+    res
+}
+
+fun min()
+{ 
+    res = arguments[0]
+    for i = 0; i < arguments?size; i++
+        if arguments[i] < res
+            res = arguments[i]
+    res
+}
+
+fun max()
+{ 
+    res = arguments[0]
+    for i = 0; i < arguments?size; i++
+        if arguments[i] > res
+            res = arguments[i]
+    res
+}
+
+fun minMax()
+{ 
+    min = arguments[0]
+    max = arguments[0]
+    for i = 0; i < arguments?size; i++
+    {   if arguments[i] > max
+            max = arguments[i]
+        if arguments[i] < min
+            min = arguments[i]
+    }
+    min,max
+}
+
+fun clamp(value,from,to){
+    if value < from from
+    elif value > to to
+    else value
+}

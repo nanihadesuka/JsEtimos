@@ -1,0 +1,693 @@
+<body>
+	<style>
+		html,
+		body {
+			font-size: 12pt;
+			margin: 0;
+			padding: 0;
+			font-weight: 600;
+			font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+		}
+
+		.hcontainer {
+			width: 100%;
+			height: 99.5vh;
+			justify-content: space-evenly;
+			max-width: 800pt;
+			margin-left: auto;
+			margin-right: auto;
+			display: flex;
+		}
+
+		.vcontainer {
+			width: 100%;
+			height: 100%;
+			justify-content: space-evenly;
+			margin-top: auto;
+			margin-bottom: auto;
+			display: flex;
+			flex-direction: column;
+		}
+
+		pre {
+			font-family: monospace, monospace;
+			font-size: 11pt;
+			color: rgb(70, 70, 70);
+			background-color: #ddd;
+			border-radius: 6pt;
+			padding: 8pt;
+			font-weight: 500;
+			margin-right: 8pt;
+			tab-size: 2;
+			transition: 0.5s;
+		}
+
+		pre:hover {
+			background-color: #d6d6d6;
+			transition: 0.5s;
+		}
+
+		pre:active {
+			background-color: #cdcdcd;
+			transition: 0.1s;
+		}
+
+
+		.round {
+			border-radius: 12px;
+			margin: 0px;
+		}
+
+		.padding {
+			padding: 6px;
+		}
+
+		.column {
+			width: 100%;
+			margin: 4px;
+		}
+
+		.row {
+			height: 100%;
+		}
+
+
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			margin-left: 0;
+			padding-left: 0;
+			margin-bottom: 2pt;
+		}
+
+		h2 {
+			margin-top: 0pt;
+		}
+
+		textarea {
+			border: none;
+			font-size: medium;
+			font-weight: normal;
+			place-content: 10px;
+			box-shadow: 0 0 7px #ccc;
+			width: 100%;
+			height: 100%;
+			resize: none;
+			margin: 10px;
+		}
+
+		textarea:focus {
+			outline: none !important;
+			border: 0px solid red;
+		}
+
+		br {
+			height: 100px;
+		}
+	</style>
+	<div class="hcontainer">
+		<div id="leftColumn"
+			class="column round padding"
+			style="
+				padding-left: 20px;
+				overflow-y:scroll;
+				flex-grow: 0;
+				background-color: #e6e6e6;
+				">
+			<h2>JsEtimos <small><small><small> :: syntax</small></small></small></h2>
+			<div id="syntaxDescription">
+
+				<pre>
+printself("hello there") 
+</pre>
+
+				<h3>Assignment</h3>
+				<pre>
+x,y,z = 1,2,3 
+list = 0:0.1:10 
+a,b = 3,2 
+a,b = b,a 
+q, w = (if false 1 else 21), 43
+</pre>
+
+				<h3>Arithmetric</h3>
+				<pre>
+x = 3 
+x *= 8 
+x /= 4 
+x += 9 
+x -= 7 
+x **= 3 
+value = (-1*2) + (10**2)/2 
+</pre>
+				<h3>Comparisions</h3>
+				<pre>
+1 <= 3 < 7 
+4 >= 4 < 7 
+4 == 4 < 7 
+10 == 10 != 7 
+(1,2) == (1,2) 
+(1,2) != (1,2,3) 
+not ((1,2,4) == (1,2,3))
+not ((1,2) == (1,3))
+(not false ==  5 > 2  ) == false 
+(not false == (5 > 2) ) == true  
+</pre>
+
+				<h3>For loop</h3>
+				<pre>
+for x1,y1 = 0,50; x1<10; x1++   
+	print((x1,y1,))   
+</pre>
+
+				<h3>Conditional expression</h3>
+
+				<pre>
+a, b, c =   if false  
+                if true 2,3,1 
+                else 3,4,3 
+            else 5,6,"hello" 
+    
+k = if 123 > 8 == 8 > 2 >= 4*-1
+        "Y"
+    else 
+        "N"
+
+print(k)
+</pre>
+
+				<h3>Comments</h3>
+
+				<pre>
+// Line comment
+
+/*
+  multiline
+  comment
+  here				
+*/
+</pre>
+
+				<h3>String interpolation</h3>
+
+				<pre>
+text0 = "hello 
+${4*12-23} there
+"
+
+text1 = "" +
+	"${ "hello" }" +
+	"there ${1}"
+</pre>
+
+				<h3>Conditional statements</h3>
+
+				<pre>
+a = 2+3
+if( a < 10)
+    a = 100
+
+printself(a == 100)
+</pre>
+
+				<h3>Function, composition, recursion and scope rules</h3>
+
+				<pre>
+kep = 10
+fun fran(){ kep = 100}
+fran()
+print(kep == 10)
+
+serra = 1000
+fun camel()
+{
+    return do { serra = 234}
+    tunez = 213
+    serra = 234
+}
+camel()
+printself(serra == 1000)
+
+pipa = 1000
+fun pepe()
+{
+    pipa = 234
+    return
+    tunez = 213
+}
+pepe()
+printself(pipa == 1000)
+
+
+fun brand(a)
+{
+    printself(a == 10)
+    fun brands()
+    {
+        return a-231 + 1
+    }
+    return brands()
+}
+
+printself(brand(10) == -220)
+
+fun factorial(b)
+{
+	if (b > 1)
+		factorial(b-1)*b
+	else 1
+}
+
+printself(factorial(1) == 1)
+printself(factorial(3) == 6)
+printself(factorial(4) == 24)
+printself(factorial(-1) == 1)
+
+fun ham() {
+    fun ham() {
+        fun ham() {
+            1
+        } 
+        1 + ham()
+    }
+    1 + ham()
+}
+
+ham() == 3
+</pre>
+
+				<h3>Function pipes, anonymous functions</h3>
+
+				<pre>
+fun bee(a,b){ return a+2,2 }
+
+foo = {
+    boo = fun { a,b ->  return b*2*a, 1 }
+    mix = fun { b,a -> b*2*a+1 }
+}
+
+fun buu(a){ return a }
+
+(100,1 | bee | foo.boo | { x,y -> x+y }) == 409
+</pre>
+
+				<h3>Pipe assignation, implicit parameters </h3>
+
+				<pre>
+t,y = "ssd",2 | { a,b ->
+    a == "ssd"
+    b == 2
+    arguments[0] == "ssd"
+    arguments[1] == 2
+    arguments[2] == undefined
+    a,b,a+b 
+} | { a,b,c ->
+    c == "ssd2"
+    arguments[2] == "ssd2"
+    a,b+c
+} | { it,it }
+
+t == "ssd" and y == "ssd"
+
+x = 3
+v = x | {
+    printself(it == x)
+    it+2,it
+}
+</pre>
+				<h3>Do expression</h3>
+
+				<pre>
+a = do { 2+3-1 }
+</pre>
+				<h3>Primitives</h3>
+
+				<pre>
+// all data is immutable
+
+value_number = 102.43
+value_string = "hello there"
+value_bool = true
+value_list = (1,2,3),((4,5),6)
+value_dict = {
+	hello = "there"
+	there = "h", "i"
+	so = {
+		uncivilized = true
+	}
+}
+value_undefined = undefined
+value_null = null
+
+printself(value_dict)
+
+</pre>
+
+				<h3>List access</h3>
+
+				<pre>
+a = (((10,2),2),3,4)
+
+b0 = a[0]
+b1 = a[1]
+b2 = a[2]
+
+printself( a[-1] == 4)
+printself( a[3] == undefined)
+
+printself( b0[0][0] == 10)
+printself( b0[0][1] == 2)
+
+printself( a[1] == 3)
+
+q,w,e = a
+r,t = q
+y,u = r
+
+printself( y == 10)
+printself( u == 2)
+
+i = (3,)
+printself(i[0] == 3)
+
+list = 1,2,3,4,4,5,6,7,8
+list[1,4]
+list[-4,-1]
+
+</pre>
+
+				<h3>Dict access</h3>
+
+				<pre>
+a = {
+	a = 2,2,3
+	d = {}
+	b = 3
+	2 ="d"
+	3 = 2
+	g = 3
+	k = {
+		4= 2,3, { 4= 2,3 }
+		5= 2
+	}
+	r = 4
+	callme = fun { a,b ->
+
+	}
+	itcall = fun {
+		it+it2+it3
+	}
+	arguemntsCall = fun {
+		return arguments
+	}
+}
+
+assert(a.a[0] == 2 )
+assert(a.2 == "d" )
+assert(a.k.4[2].4[1] == 3 )
+assert(a.callme(1,2) == undefined )
+assert(a.itcall(1,23023,2,3) == 6 )
+</pre>
+
+				<h3>Pipe map, filter special operations</h3>
+				<pre>
+s = 0,2,3,4
+(s | filter { it > 2 } )?size == 2
+(s | map { it*2 } ) == (0,4,6,8)
+(s | filter { it > 2 } | map { it*2 } ) == (6,8)
+(s | map { it*2 } | filter { it > 2 } ) == (4,6,8)
+(s | map { it*2 } | ?sum ) == 18
+</pre>
+
+				<h3>Range operations</h3>
+				<pre>
+0:0.4:1 == (0,0.4,0.8)
+0:-0.4:1 == (0,0.4,0.8)
+1:0.5:0 == (1,0.5,0)
+1:-0.5:0 == (1,0.5,0)
+1:0 == (1,0)
+0:5 == (0,1,2,3,4,5)
+</pre>
+
+				<h3>Pipe accessors</h3>
+				<pre>
+    x = 0:0.25:10 | 
+        map { it?floor, it } |
+        ?group?toList |
+        map { k,v -> v?sum } |
+        ?first
+
+    x == 1.5
+</pre>
+
+				<h3>Built-in methods: list</h3>
+				<pre>
+list = (3,2),(4,1),(2,6)
+list?toString
+list?toDict.4 == 1
+list?size == 3
+list?reverse[0] == (2,6)
+list?flat[0,3] == (3,2,4)
+list?is == "list"
+list?first == (3,2)
+list?last == (2,6)
+list?lastIndex == 2
+list?isEmpty == false
+list?isNotEmpty == true
+list = (1,2,3),(4,5,6)
+list?zip[1] == (2,5)
+list = 5,3,2,1,2
+list?sort == (1,2,2,3,5)
+list?sum == 13
+list?max == 5
+list?min == 1
+list?average == 13/list?size
+list?dropFirst == (3,2,1,2)
+list?dropLast == (5,3,2,1)
+</pre>
+
+				<h3>Built-in methods: dict</h3>
+				<pre>
+dict = { 
+    a = 1,2
+    b = "hello"
+    c = {}
+    2 = false
+}
+
+dict?toString
+dict?toList
+dict?size == 4
+dict?keys == (2,"a","b","c")
+dict?values?first == false
+dict?is == "dict"
+dict?isEmpty == false
+dict?isNotEmpty == true
+</pre>
+
+				<h3>Built-in methods: string</h3>
+				<pre>
+string = " hello "
+multiline = "hello
+world"
+
+string?toString == string
+string?toList
+"23"?toNumber == 23
+string?size == 7
+"hEllo"?toLowerCase == "hello"
+"hello"?toUpperCase == "HELLO"
+string?trim == "hello"
+string?trimEnd == " hello"
+string?trimStart == "hello "
+"hello"?capitalize == "Hello"
+string?is == "string"
+multiline?lines?size == 2
+string?isEmpty == false
+string?isNotEmpty == true
+string?isBlank == false
+string?isNotBlank == true
+string?first == " "
+string?last == " "
+string?hashCode == 1409378734
+</pre>
+
+				<h3>Built-in methods: number</h3>
+				<pre>
+number = 3.4
+number?toString == "3.4"
+number?toBool == true
+number?toList == (0,1,2)
+number?trunc == 3
+number?round == 3
+number?ceil == 4
+number?floor == 3
+number?abs == 3.4
+number?sign == 1
+number?cos
+number?sin
+number?tan
+number?cosh
+number?sinh
+number?tanh
+number?negative == -3.4
+-3.4?negative == 3.4
+number?is == "number"
+
+0 <= 10?random <= 10
+0 <= 6?randomInt <= 6
+value = 6?randomSign
+value == 6 or value == -6
+</pre>
+
+				<h3>Built-in methods: bool</h3>
+				<pre>
+value = true
+value?toString == "true"
+value?toNumber == 1
+value?flip == 0
+value?is == "bool"
+</pre>
+
+				<h3>Built-in methods: undefined</h3>
+				<pre>
+value = undefined
+value?toString == "undefined"
+value?is == "undefined"
+</pre>
+
+				<h3>Built-in methods: null</h3>
+				<pre>
+value = null
+value?toString == "null"
+value?is == "null"
+</pre>
+
+
+
+			</div>
+		</div>
+		<div class="column vcontainer"
+			style="
+			flex-grow: 0;
+			max-width: 50%;
+			">
+			<textarea id="input"
+				spellcheck="false"
+				class="row round padding "
+				style="
+				padding: 20px;
+				overflow-y:unset;">
+print("Hello there\n")
+
+fun factorial(b)
+{
+    if (b > 1) factorial(b - 1) * b else 1
+}
+
+printself(factorial(1) == 1)
+printself(factorial(3) == 6)
+printself(factorial(4) == 24)
+printself(factorial(-1) == 1)
+        </textarea>
+			<output class="row round padding"
+				style="
+            margin-top:8px;
+            height: auto;
+			font-weight: 400;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            background-color: rgb(188, 255, 185);
+			color:#666;">
+				Run (Alt+Enter, Alt+S or F4)
+			</output>
+			<output id="output"
+				class="row padding"
+				style="
+				white-space: pre;
+				font-family: monospace;
+                height: 50%;
+                border-left: solid 1px rgb(189, 189, 189);
+                border-right: solid 1px rgb(189, 189, 189);
+                border-bottom: solid 1px rgb(189, 189, 189);
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+                margin-bottom: 10px;
+				white-space:pre-wrap ;
+				word-wrap:break-word ;
+                overflow-y:auto;
+				font-size:10pt;">
+
+			</output>
+		</div>
+
+
+		<script type="text/javascript"
+			src="jsetimos.js"></script>
+
+		<script>
+
+			const eleInput = document.getElementById("input")
+			const eleOutput = document.getElementById("output")
+			const leftColumn = document.getElementById("leftColumn")
+
+			{
+				const scroll = window.sessionStorage.getItem("leftColumn_scroll")
+				if (scroll != null)
+					leftColumn.scrollTo(0,parseFloat(scroll))
+				const inputText = window.sessionStorage.getItem("inputText")
+				if (inputText != null)
+					eleInput.value = inputText
+			}
+
+			window.onbeforeunload = () =>
+			{
+				window.sessionStorage.setItem("leftColumn_scroll",leftColumn.scrollTop)
+				window.sessionStorage.setItem("inputText",eleInput.value)
+			}
+
+			extSystem.redirectPrint = true
+			extSystem.redirectPrintCallback = (output) =>
+			{
+				eleOutput.innerHTML += output + "\n"
+			}
+
+			function executeText(text)
+			{
+				eleOutput.innerHTML = ""
+				const etimos = new JSEtimos({ inputMode: true, inputText: text })
+				etimos.run()
+			}
+
+			executeText(eleInput.value)
+
+			eleInput.onkeydown = function (event)
+			{
+				if (event.defaultPrevented)
+					return
+				if ((event.keyCode == 13 && event.altKey) ||
+					(event.key == "s" && event.altKey) ||
+					(event.key == "F4"))
+				{
+					executeText(eleInput.value)
+					event.preventDefault()
+					return
+				}
+			}
+
+			document.querySelectorAll("#syntaxDescription > pre").forEach(elem =>
+			{
+
+				elem.ondblclick = (event) =>
+				{
+					eleInput.value = elem.textContent
+					executeText(eleInput.value)
+					event.preventDefault()
+				}
+			})
+
+		</script>
+
+</body>

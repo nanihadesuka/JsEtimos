@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"noImplicitAny": false,
+		"downlevelIteration": true,
+		"target": "ES6",
+		"strict": false,
+		"allowSyntheticDefaultImports": true,
+		"allowJs": true,
+		"checkJs": false,
+		"noStrictGenericChecks": true
+	},
+	"files": ["jsetimos.ts"]
+}
