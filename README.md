@@ -1,3 +1,9 @@
+
+
+### **[Click here to try it !](https://nanihadesuka.github.io/JsEtimos/)**
+
+### About
+
 JsEtimos is an interpreted language based on a mix of python, javascript and kotlin.
 
 Python for the scope rules, minimum boilerplate and the import system.
@@ -11,12 +17,14 @@ The parser is of the type [PEG](https://en.wikipedia.org/wiki/Parsing_expression
 
 The lexer and parser can analize statically the validity of the syntax (and some semantics) and give contextual errors with error line and cause.
 
+### Running
+
 The interpreter validates given the dynamism of the data flow of the program runtime and gives informative errors but won't show you any contextual information or where (position in the program) the error has occured.
 
-The interpreter can be run in three modes: froma file, shell mode (REPL) o from a string given in the command line. For more info for how to run read INSTRUCTIONS file.
+The interpreter can be run in three modes: from a file, shell mode (REPL) o from a string given in the command line. For more info for how to run it read the INSTRUCTIONS file.
 
 As the implementation has been done in Typescript it can run on the browser, node.js and even on the game [0 A.D](https://play0ad.com/) which uses the spidermonkey js engine (nice game btw, check it out :-> )
 
-
-This can be considered a toy language, the implementation sill is missing many things, has some bugs and incosistences and is not optimized so be gente with it :)
+### Notice
+This is a toy language, the implementation sill is missing many things, has some bugs and incosistences and is not optimized so be gente with it :)
 
