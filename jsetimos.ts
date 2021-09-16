@@ -3360,10 +3360,18 @@ class JSEtimos
         catch (e)
         {
             if (e instanceof LexerError || e instanceof ParserError || e instanceof RuntimeError)
-                extSystem.print(e.stack)
+                this.printError(e)
             else
                 throw e
         }
+    }
+
+    printError(e: Error)
+    {
+        // In chrome the message is duplicated
+        extSystem.print(e.message)
+        const stack = e.stack.replace(e.message,"")
+        extSystem.print(stack)
     }
 }
 
