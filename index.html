@@ -73,7 +73,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			position: fixed;
+			position: absolute;
 			border: none;
 			user-select: none;
 			font-size: 20pt;
@@ -614,7 +614,13 @@ value?is == "null"
 			style="
 			flex-grow: 0;
 			max-width: 50%;
+			position: relative;
 			">
+			<button id="saveCode"
+			title="Save this code on the url"
+			class="shareCodeButton">
+			<>
+			</button>
 			<textarea id="input"
 				spellcheck="false"
 				class="row round padding "
@@ -652,11 +658,6 @@ value?is == "null"
 				font-size:10pt;">
 
 			</output>
-			<button id="saveCode"
-				title="Save this code on the url"
-				class="shareCodeButton">
-				<>
-			</button>
 		</div>
 
 
