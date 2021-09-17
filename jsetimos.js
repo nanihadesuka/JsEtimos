@@ -1950,15 +1950,13 @@ class Parser {
     forLoop() {
         /*
             FOR
-            {
-                optionalParenthesis
-                <
-                    assignation? SEMICOLON
-                    expression? SEMICOLON
-                    blockOrExpression?
-                >
-                EOL? ([LBRACKET] block | blockSubroutine) EOL?
-            }
+            optionalParenthesis
+            <
+                assignation? SEMICOLON
+                expression? SEMICOLON
+                blockOrExpression?
+            >
+            EOL? ([LBRACKET] block | blockSubroutine) EOL?
         */
         const runBeforeSEMICOLON = (fn) => {
             const node = this.is(TokenType.SEMICOLON) ? new NoOp() : fn();
@@ -2298,12 +2296,14 @@ class Interpreter {
         return new ListEval(node.nodes.map(v => this.visit(v)));
     }
     visit_Dictionary(node) {
+        const nodes = {};
         for (let key in node.nodes) {
             if (node.nodes[key] instanceof AnonymousFunction)
-                continue;
-            node.nodes[key] = this.visit(node.nodes[key]);
+                nodes[key] = node.nodes[key];
+            else
+                nodes[key] = this.visit(node.nodes[key]);
         }
-        return node;
+        return new Dictionary(nodes);
     }
     visit_CallOp(node) {
         const fun = this.visit(node.func);

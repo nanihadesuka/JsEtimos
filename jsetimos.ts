@@ -2344,15 +2344,13 @@ class Parser
     {
         /*
             FOR
-            {
-                optionalParenthesis
-                <
-                    assignation? SEMICOLON
-                    expression? SEMICOLON
-                    blockOrExpression?
-                >
-                EOL? ([LBRACKET] block | blockSubroutine) EOL?
-            }
+            optionalParenthesis
+            <
+                assignation? SEMICOLON
+                expression? SEMICOLON
+                blockOrExpression?
+            >
+            EOL? ([LBRACKET] block | blockSubroutine) EOL?
         */
         const runBeforeSEMICOLON = (fn: () => ASTNode): ASTNode =>
         {
@@ -2775,13 +2773,15 @@ class Interpreter
 
     visit_Dictionary(node: Dictionary): any
     {
+        const nodes = {}
         for (let key in node.nodes)
         {
             if (node.nodes[ key ] instanceof AnonymousFunction)
-                continue
-            node.nodes[ key ] = this.visit(node.nodes[ key ])
+                nodes[ key ] = node.nodes[ key ]
+            else
+                nodes[ key ] = this.visit(node.nodes[ key ])
         }
-        return node
+        return new Dictionary(nodes)
     }
 
     visit_CallOp(node: CallOp): any
@@ -3370,7 +3370,7 @@ class JSEtimos
     {
         // In chrome the message is duplicated
         extSystem.print(e.message)
-        const stack = e.stack.replace(e.message,"")
+        const stack = e.stack.replace(e.message, "")
         extSystem.print(stack)
     }
 }
