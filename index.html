@@ -52,6 +52,46 @@
 			transition: 0.1s;
 		}
 
+		.shareCodeButton {
+			font-family: monospace, monospace;
+			font-size: 11pt;
+			color: rgb(70, 70, 70);
+			background-color: #ddd;
+			border-radius: 6pt;
+			padding: 8pt;
+			font-weight: 500;
+			tab-size: 2;
+			box-shadow: 0 0 10px #eee;
+			transition: 0.5s;
+			width: 30pt;
+			height: 30pt;
+			top: 10pt;
+			right: 10pt;
+			border-radius: 25%;
+			background-color: #e8e8e8;
+			align-content: center;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			position: fixed;
+			border: none;
+			user-select: none;
+			font-size: 20pt;
+			color: #888;
+		}
+
+		.shareCodeButton:hover {
+			background-color: #e0e0e0;
+			color: #777;
+			transition: 0.2s;
+		}
+
+		.shareCodeButton:active {
+			background-color: #ccc;
+			color: #222;
+			transition: 0.1s;
+		}
+
 
 		.round {
 			border-radius: 12px;
@@ -96,6 +136,7 @@
 			height: 100%;
 			resize: none;
 			margin: 10px;
+			tab-size: 4;
 		}
 
 		textarea:focus {
@@ -116,7 +157,7 @@
 				flex-grow: 0;
 				background-color: #e6e6e6;
 				">
-			<h2>JsEtimos <small><small><small> :: syntax</small></small></small>   &nbsp;&nbsp;<small><small><a href="https://github.com/nanihadesuka/JsEtimos">Github repo</a></small></small></h2>
+			<h2>JsEtimos <small><small><small> :: syntax</small></small></small> &nbsp;&nbsp;<small><small><a href="https://github.com/nanihadesuka/JsEtimos">Github repo</a></small></small></h2>
 			<div id="syntaxDescription">
 
 				<pre>
@@ -433,13 +474,13 @@ s = 0,2,3,4
 
 				<h3>Pipe accessors</h3>
 				<pre>
-    x = 0:0.25:10 | 
-        map { it?floor, it } |
-        ?group?toList |
-        map { k,v -> v?sum } |
-        ?first
+x = 0:0.25:10 | 
+	map { it?floor, it } |
+	?group?toList |
+	map { k,v -> v?sum } |
+	?first
 
-    x == 1.5
+x == 1.5
 </pre>
 
 				<h3>Built-in methods: list</h3>
@@ -580,18 +621,8 @@ value?is == "null"
 				style="
 				padding: 20px;
 				overflow-y:unset;">
-print("Hello there\n")
 
-fun factorial(b)
-{
-    if (b > 1) factorial(b - 1) * b else 1
-}
-
-printself(factorial(1) == 1)
-printself(factorial(3) == 6)
-printself(factorial(4) == 24)
-printself(factorial(-1) == 1)
-        </textarea>
+        	</textarea>
 			<output class="row round padding"
 				style="
             margin-top:8px;
@@ -621,6 +652,11 @@ printself(factorial(-1) == 1)
 				font-size:10pt;">
 
 			</output>
+			<button id="saveCode"
+				title="Save this code on the url"
+				class="shareCodeButton">
+				<>
+			</button>
 		</div>
 
 
@@ -629,23 +665,51 @@ printself(factorial(-1) == 1)
 
 		<script>
 
+			const defaultInput = `
+print("Hello there\\n")
+
+fun factorial(b)
+{
+    if (b > 1) factorial(b - 1) * b else 1
+}
+
+printself(factorial(1) == 1)
+printself(factorial(3) == 6)
+printself(factorial(4) == 24)
+printself(factorial(-1) == 1)
+`
 			const eleInput = document.getElementById("input")
 			const eleOutput = document.getElementById("output")
 			const leftColumn = document.getElementById("leftColumn")
+			const saveToUrl = document.getElementById("saveCode")
 
 			{
 				const scroll = window.sessionStorage.getItem("leftColumn_scroll")
 				if (scroll != null)
-					leftColumn.scrollTo(0,parseFloat(scroll))
+					leftColumn.scrollTo(0, parseFloat(scroll))
+
 				const inputText = window.sessionStorage.getItem("inputText")
+				const urlParams = new URLSearchParams(window.location.search)
+
 				if (inputText != null)
 					eleInput.value = inputText
+				else if (urlParams.has("input"))
+					eleInput.value = urlParams.get("input")
+				else
+					eleInput.value = defaultInput
+			}
+
+			saveToUrl.onclick = () =>
+			{
+				const url = new URL(window.location)
+				url.searchParams.set("input", eleInput.value)
+				window.history.pushState(null,null,url);
 			}
 
 			window.onbeforeunload = () =>
 			{
-				window.sessionStorage.setItem("leftColumn_scroll",leftColumn.scrollTop)
-				window.sessionStorage.setItem("inputText",eleInput.value)
+				window.sessionStorage.setItem("leftColumn_scroll", leftColumn.scrollTop)
+				window.sessionStorage.setItem("inputText", eleInput.value)
 			}
 
 			extSystem.redirectPrint = true
@@ -674,6 +738,14 @@ printself(factorial(-1) == 1)
 					executeText(eleInput.value)
 					event.preventDefault()
 					return
+				}
+				if (event.key == 'Tab') {
+					event.preventDefault();
+					const start = this.selectionStart;
+					const end = this.selectionEnd;
+					this.value = this.value.substring(0, start) + "\t" + this.value.substring(end);
+					this.selectionEnd = start + 1;
+					this.selectionStart = this.selectionEnd
 				}
 			}
 
