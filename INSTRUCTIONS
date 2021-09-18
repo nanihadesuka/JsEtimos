@@ -1,24 +1,28 @@
 Needs:
-* typescript 3.8.3 (future versions add unwated transpiled code)
-  npm install -g typescript@3.8.3
 * Node v14.6.0 >=
+* (optional) typescript 3.8.3 (future versions add unwanted transpiled code)
+  npm install -g typescript@3.8.3
 
 To try:
-Open index.html in a browser
+Open index.html in a browser.
 
 To run a file:
-tsc -b -w
 node jsetimos.js fileName
 
 To run in shell mode (REPL):
-tsc -b -w
 node jsetimos.js
 
 To run from raw input (untested):
-tsc -b -w
 node jsetimos.js --inputMode "print("hello")"
 
 Import files:
     Base dir is main file running directory.
     JSEtimos file extension is *.jk
+
+Optional: If you made some changes on the jsetimos.ts file you will need to recompile again to js.
+tsc -b
+
+If you want some syntax highlight when editing 
+jsetimos code you can use the kotlin highlighter
+of your editor of choice, will work well enough.
 
