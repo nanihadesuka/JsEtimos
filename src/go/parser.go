@@ -185,7 +185,6 @@ func (p *Parser) anonymousFunction(noParams bool) *AnonymousFunction {
 	}
 
 	if len(its) > 0 {
-		// Array.prototype.sort() default ordering compares the numbers as strings
 		sorted := make([]float64, len(its))
 		for i, v := range its {
 			if v[2:] == "" {
@@ -194,9 +193,7 @@ func (p *Parser) anonymousFunction(noParams bool) *AnonymousFunction {
 				sorted[i] = jsParseFloat(v[2:]) // digits only, same as parseInt
 			}
 		}
-		sort.SliceStable(sorted, func(i, j int) bool {
-			return compareU16(numToString(sorted[i]), numToString(sorted[j])) < 0
-		})
+		sort.Float64s(sorted)
 		nOfIts := int(sorted[len(sorted)-1]) + 1
 		parameters = make([]*ID, nOfIts)
 		for i := range parameters {

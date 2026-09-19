@@ -1,0 +1,5 @@
+// Bug 3 (BUGS_AUDIT.MD): `--dumpAST` never writes anything
+// args: --dumpAST
+// expect-file: tests/bugs/bug03a_dump_ast_default_path.jk.ast.yml
+
+x = 1 + 2

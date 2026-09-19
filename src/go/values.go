@@ -261,18 +261,6 @@ func arrayToString(values []any) string {
 	return strings.Join(parts, ",")
 }
 
-// value.toString(): same as toStr but throws on undefined and null
-func methodToString(v any) string {
-	if isNullish(v) {
-		name := "null"
-		if isUndefined(v) {
-			name = "undefined"
-		}
-		throwTypeError("Cannot read properties of " + name + " (reading 'toString')")
-	}
-	return toStr(v)
-}
-
 // ToNumber
 func toNum(v any) float64 {
 	switch x := toPrimitive(v).(type) {

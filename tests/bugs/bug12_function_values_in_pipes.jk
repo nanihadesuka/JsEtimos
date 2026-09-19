@@ -1,0 +1,19 @@
+// Bug 12 (BUGS_AUDIT.MD): function values can't be passed through pipes as plain values
+
+fun double(v) { v * 2 }
+fun apply(fn, value) { fn(value) }
+
+assert(apply(double, 3) == 6)
+assert(((double, 3) | apply) == 6)
+
+holder = { inc = fun { a -> a + 1 } }
+assert(((holder.inc, 1) | apply) == 2)
+
+same = double | { it }
+assert(same(4) == 8)
+
+printer = print | { it }
+assert(printer == print)
+
+functions = double, double
+assert((functions | map { fn -> fn(1) }) == (2, 2))

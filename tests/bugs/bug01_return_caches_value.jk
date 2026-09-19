@@ -1,0 +1,17 @@
+// Bug 1 (BUGS_AUDIT.MD): `return` caches the first value it returns
+
+fun double(a) { return a * 2 }
+assert(double(1) == 2)
+assert(double(5) == 10)
+
+fun sign(n) {
+    if n < 0 return "negative"
+    if n > 0 return "positive"
+    return "zero"
+}
+assert(sign(-3) == "negative")
+assert(sign(4) == "positive")
+assert(sign(0) == "zero")
+assert(sign(9) == "positive")
+
+assert(((1,2,3) | map { return it * 10 }) == (10,20,30))

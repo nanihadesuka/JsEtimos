@@ -1,0 +1,21 @@
+// Bug 6 (BUGS_AUDIT.MD): compound assignment updates every scope with that name
+
+x = 10
+fun shadow() {
+    x = 1
+    x += 5
+    x
+}
+assert(shadow() == 6)
+assert(x == 10)
+
+do {
+    y = 100
+    fun inner() {
+        y = 2
+        y *= 3
+        y
+    }
+    assert(inner() == 6)
+    assert(y == 100)
+}

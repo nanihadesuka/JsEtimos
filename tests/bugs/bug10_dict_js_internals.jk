@@ -1,0 +1,10 @@
+// Bug 10 (BUGS_AUDIT.MD): dictionary access exposes JavaScript internals
+
+d = { a = 1 }
+assert(d.constructor == undefined)
+assert(d.toString == undefined)
+assert(d.hasOwnProperty == undefined)
+assert(d.a == 1)
+
+e = { constructor = "mine" }
+assert(e.constructor == "mine")

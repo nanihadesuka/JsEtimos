@@ -22,8 +22,7 @@ class ExtSystem_NodeJs {
         return this.fs.readFileSync(filePath, "utf-8");
     }
     writeFile(data, file, baseDir = undefined) {
-        var _a;
-        (_a = baseDir == baseDir) !== null && _a !== void 0 ? _a : this.dirName();
+        baseDir = baseDir !== null && baseDir !== void 0 ? baseDir : this.dirName();
         return this.fs.writeFile(baseDir + "/" + file, data, () => { });
     }
     existFile(filePath) {
@@ -49,8 +48,14 @@ class ExtSystem_NodeJs {
         const list = process.argv.slice(2);
         const attributes = {};
         for (let item of list) {
-            if (item.startsWith("--"))
-                attributes[item.slice(2)] = item.slice(2);
+            if (item.startsWith("--")) {
+                // --flag or --name=value
+                const separator = item.indexOf("=");
+                if (separator == -1)
+                    attributes[item.slice(2)] = item.slice(2);
+                else
+                    attributes[item.slice(2, separator)] = item.slice(separator + 1);
+            }
             else if (item.startsWith("-"))
                 continue;
             else
@@ -97,8 +102,7 @@ class ExtSystem_Pyrogenesis0ad {
         return "";
     }
     writeFile(data, file, baseDir = undefined) {
-        var _a;
-        (_a = baseDir == baseDir) !== null && _a !== void 0 ? _a : this.dirName();
+        baseDir = baseDir !== null && baseDir !== void 0 ? baseDir : this.dirName();
         return "";
     }
     existFile(filePath) {
@@ -158,8 +162,7 @@ class ExtSystem_Browser {
         return "";
     }
     writeFile(data, file, baseDir = undefined) {
-        var _a;
-        (_a = baseDir == baseDir) !== null && _a !== void 0 ? _a : this.dirName();
+        baseDir = baseDir !== null && baseDir !== void 0 ? baseDir : this.dirName();
         return "";
     }
     existFile(filePath) {
@@ -670,25 +673,9 @@ class List extends ASTNode {
             v.toStringIdent(disp) :
             v instanceof List ?
                 "(" + v.toStringIdent(disp) + ")" :
-                v.toString();
+                String(v);
         return this.nodes.map(v => repr(v, ident + 2)).join(", ");
     }
-    sumScalar(scalar) { return new List(this.nodes.map(v => v + scalar)); }
-    restScalar(scalar) { return new List(this.nodes.map(v => v - scalar)); }
-    multScalar(scalar) { return new List(this.nodes.map(v => v * scalar)); }
-    divScalar(scalar) { return new List(this.nodes.map(v => v / scalar)); }
-    modScalar(scalar) { return new List(this.nodes.map(v => v % scalar)); }
-    powScalar(scalar) { return new List(this.nodes.map(v => Math.pow(v, scalar))); }
-    restScalarRL(scalarL) { return new List(this.nodes.map(v => scalarL - v)); }
-    divScalarRL(scalarL) { return new List(this.nodes.map(v => scalarL / v)); }
-    modScalarRL(scalarL) { return new List(this.nodes.map(v => scalarL % v)); }
-    powScalarRL(scalarL) { return new List(this.nodes.map(v => Math.pow(scalarL, v))); }
-    sumList(vector) { return new List(this.nodes.map((v, i) => v + vector.nodes[i])); }
-    restList(vector) { return new List(this.nodes.map((v, i) => v - vector.nodes[i])); }
-    multList(vector) { return new List(this.nodes.map((v, i) => v * vector.nodes[i])); }
-    divList(vector) { return new List(this.nodes.map((v, i) => v / vector.nodes[i])); }
-    modList(vector) { return new List(this.nodes.map((v, i) => v % vector.nodes[i])); }
-    powList(vector) { return new List(this.nodes.map((v, i) => Math.pow(v, vector.nodes[i]))); }
 }
 // Used so when the List is visited it doesn't cause an infinite loop
 class ListEval extends List {
@@ -709,7 +696,7 @@ class Dictionary extends ASTNode {
             v.toStringIdent(disp) :
             v instanceof List ?
                 v.toStringIdent(disp) :
-                v.toString();
+                String(v);
         if (list.length <= 0)
             return "{ " +
                 list.map(k => `${k} = ${repr(this.nodes[k], ident + 2)}`).join() +
@@ -841,6 +828,12 @@ class ReturnOp extends ASTNode {
     constructor(node) {
         super();
         this.node = node;
+    }
+}
+// Thrown by a return statement, carries the returned value up to the function call
+class ReturnValue {
+    constructor(value) {
+        this.value = value;
     }
 }
 class BaseFunction extends ASTNode {
@@ -1006,10 +999,13 @@ class Stack {
     set(id, value) {
         this.activeRecord.set(id, value);
     }
+    // Updates the nearest scope that holds the name
     setOnExisting(id, value) {
         for (let i = this.stackRecordList.length - 1; i > -1; i--)
-            if (this.stackRecordList[i].has(id))
+            if (this.stackRecordList[i].has(id)) {
                 this.stackRecordList[i].set(id, value);
+                return;
+            }
     }
     hasOwn(id) {
         return this.activeRecord.has(id);
@@ -1150,7 +1146,7 @@ class Parser {
         if (parameters.length && its.length)
             this.error(`Not allowed to have explicit parameters and also use special 'it' variables ${its}.`);
         if (its.length) {
-            const sorted = its.map(v => v.slice(2)).map(v => v == "" ? 0 : parseInt(v)).sort();
+            const sorted = its.map(v => v.slice(2)).map(v => v == "" ? 0 : parseInt(v)).sort((a, b) => a - b);
             const nOfIts = sorted[sorted.length - 1] + 1;
             parameters = new Array(nOfIts).fill(0).
                 map((_, i) => i == 0 ? "it" : `it${i}`).
@@ -1401,12 +1397,6 @@ class Parser {
             const id = new ID(this.token);
             this.eat(TokenType.ID);
             return new VariableIncrementPrefixOp(token, id);
-        }
-        if (this.is(TokenType.PLUS, TokenType.MINUS)) {
-            const token = this.token;
-            this.eat(token.type);
-            this.eatEOL();
-            return new UnaryOp(token, this.factor(nVals));
         }
         if (this.is(TokenType.PLUS, TokenType.MINUS)) {
             const token = this.token;
@@ -2019,12 +2009,11 @@ class Interpreter {
         return node;
     }
     visit_ReturnOp(node) {
-        // Throw ReturnOp so it can signal the
-        // capturing parent a return call has taken place
-        // but keep vising the child node so a final
-        // value can be found
-        node.node = this.visit(node.node);
-        throw node;
+        // Throw the returned value so it can signal the
+        // capturing parent a return call has taken place.
+        // The AST node itself must not be modified, it
+        // runs again on the next call.
+        throw new ReturnValue(this.visit(node.node));
     }
     visit_Real(node) {
         return parseFloat(node.op.value);
@@ -2158,7 +2147,7 @@ class Interpreter {
                         if (typeof key != "string" && typeof key != "number")
                             throw this.error(`Group operation. List item key must be 'string' or 'number'.`);
                         const value = item.nodes[1];
-                        if (key in dict.nodes)
+                        if (Object.prototype.hasOwnProperty.call(dict.nodes, key))
                             dict.nodes[key].nodes.push(value);
                         else
                             dict.nodes[key] = new List([value]);
@@ -2238,8 +2227,8 @@ class Interpreter {
                 case "isNegative": return object < 0;
                 case "isPositive": return object >= 0;
                 case "isInfinite": return object === Infinity || object === -Infinity;
-                case "isFinite": return object !== Infinity && object !== -Infinity && object !== NaN;
-                case "isNaN": return object === NaN;
+                case "isFinite": return Number.isFinite(object);
+                case "isNaN": return Number.isNaN(object);
                 case "is": return "number";
                 case "rad": return object * Math.PI / 180;
                 case "deg": return object * 180 / Math.PI;
@@ -2275,7 +2264,7 @@ class Interpreter {
                 case "keys": return new List(object.getGlobalVariablesKeys());
                 case "is": return "dict";
             }
-            this.error(`Method '${node.key}' not found in object type 'null': ${object}`);
+            this.error(`Method '${node.key}' not found in object type 'module': ${object.pathFile}`);
         }
         if (node.key == "toString")
             return `${object}`;
@@ -2284,7 +2273,7 @@ class Interpreter {
     visit_AccessKeyOp(node) {
         const object = this.visit(node.object);
         if (object instanceof Dictionary)
-            return object.nodes[node.key];
+            return Object.prototype.hasOwnProperty.call(object.nodes, node.key) ? object.nodes[node.key] : undefined;
         if (object instanceof Stack) {
             if (!object.has(node.key))
                 this.error(`Module ${node.object.name}: ${node.object.name}.${node.key} not found.`);
@@ -2314,7 +2303,8 @@ class Interpreter {
         throw this.error(`Object is not an function, can't execute a call. Got '${fun}' instead.`);
     }
     visit_PipeOp(pipe) {
-        const itemExec = (fun, arg) => this.executeFunction(fun, arg instanceof List ? arg : new List([arg]));
+        // Values flowing through the pipe are already evaluated
+        const itemExec = (fun, arg) => this.executeFunction(fun, arg instanceof List ? arg : new List([arg]), true);
         let left = this.visit(pipe.entry);
         for (let pipeNode of pipe.nodes) {
             const args = left instanceof List ? left : new List([left]);
@@ -2325,7 +2315,7 @@ class Interpreter {
                 else if (pipeNode.passType == TokenType.FILTER)
                     left = new List(args.nodes.filter(arg => itemExec(fun, arg)));
                 else
-                    left = this.executeFunction(fun, args);
+                    left = this.executeFunction(fun, args, true);
             }
             else if (pipeNode.expression instanceof AnonymousFunction) {
                 const fun = pipeNode.expression;
@@ -2334,7 +2324,7 @@ class Interpreter {
                 else if (pipeNode.passType == TokenType.FILTER)
                     left = new List(args.nodes.filter(arg => itemExec(fun, arg)));
                 else
-                    left = this.executeFunction(fun, args);
+                    left = this.executeFunction(fun, args, true);
             }
             else {
                 const fun = this.visit(pipeNode.expression);
@@ -2345,7 +2335,7 @@ class Interpreter {
                 else if (pipeNode.passType == TokenType.FILTER)
                     left = new List(args.nodes.filter(arg => itemExec(fun, arg)));
                 else
-                    left = this.executeFunction(fun, args);
+                    left = this.executeFunction(fun, args, true);
             }
         }
         return left;
@@ -2567,8 +2557,10 @@ class Interpreter {
         const fun = this.stack.get(call.name);
         return this.executeFunction(fun, call.args);
     }
-    executeFunction(fun, args) {
-        const evaluatedArgs = this.visit_List(args);
+    // argsEvaluated: the arguments are runtime values (not AST), visiting them again
+    // would run anonymous functions and re-declare named ones
+    executeFunction(fun, args, argsEvaluated = false) {
+        const evaluatedArgs = argsEvaluated ? new ListEval(args.nodes) : this.visit_List(args);
         const currentScope = this.stack;
         // -1 means the base stack scope is the same
         // (happens when a function is not defined in global scope)
@@ -2587,8 +2579,8 @@ class Interpreter {
                 this.error("FunctionCall, invalid instanceof type.");
         }
         catch (value) {
-            if (value instanceof ReturnOp)
-                return value.node;
+            if (value instanceof ReturnValue)
+                return value.value;
             throw value;
         }
         finally {
@@ -2627,7 +2619,7 @@ class Interpreter {
     }
     visit_ForLoopOp(node) {
         this.visit(node.setup);
-        while (this.visit(node.runCondition) == true) {
+        while (this.visit(node.runCondition)) {
             this.visit(node.body);
             this.visit(node.increment);
         }
@@ -2643,7 +2635,6 @@ class Interpreter {
         if (start < end) {
             const inv_step = 1.0 / step;
             const range = (end - start) * inv_step;
-            list.length == range + 1;
             for (let i = 0; i <= range; i++)
                 list.push(start + i * step);
             return new List(list);
@@ -2651,7 +2642,6 @@ class Interpreter {
         else {
             const inv_step = 1.0 / step;
             const range = (start - end) * inv_step;
-            list.length == range + 1;
             for (let i = 0; i <= range; i++)
                 list.push(start - i * step);
             return new List(list);
@@ -2692,20 +2682,23 @@ class Interpreter {
             return fn();
         }
         catch (value) {
-            if (value instanceof ReturnOp)
-                return value.node;
+            if (value instanceof ReturnValue)
+                return value.value;
             throw value;
         }
     }
     scopedReturn(fn) {
         this.stack.push();
-        const res = this.returnCatcher(() => fn());
-        this.stack.pop();
-        return res;
+        try {
+            return this.returnCatcher(() => fn());
+        }
+        finally {
+            this.stack.pop();
+        }
     }
     interpret(tree, dumpAST = false, dumpFile = undefined) {
         if (dumpAST)
-            extSystem.writeFile(extSystem.prettyPrintToString(tree), dumpFile, undefined);
+            extSystem.writeFile(extSystem.prettyPrintToString(tree, false), dumpFile, undefined);
         return this.returnCatcher(() => this.visit(tree));
     }
 }
@@ -2741,11 +2734,16 @@ class JSEtimos {
         var _a;
         const filePath = extSystem.dirName() + "/" + fileName;
         const dumpAST = this.args.dumpAST;
-        const dumpASTFile = (_a = this.args.dumpFile) !== null && _a !== void 0 ? _a : filePath + ".ast.yml";
-        const dir = extSystem.dirName() + "/" + fileName.split("/").slice(0, -1).join("/");
+        // Relative to the base directory, like any other written file
+        const dumpASTFile = (_a = this.args.dumpFile) !== null && _a !== void 0 ? _a : fileName + ".ast.yml";
+        // The lexer takes the directory and the bare file name separately,
+        // otherwise the relative directory ends up twice in the file path
+        const pathParts = fileName.split("/");
+        const relativeDir = pathParts.slice(0, -1).join("/");
+        const dir = relativeDir == "" ? extSystem.dirName() : extSystem.dirName() + "/" + relativeDir;
         Stack.reset();
         const text = extSystem.readFile(filePath);
-        const lexer = new Lexer(text, dir, fileName);
+        const lexer = new Lexer(text, dir, pathParts[pathParts.length - 1]);
         const parser = new Parser(lexer, new Stack(filePath, 0));
         const interpreter = new Interpreter(filePath, 0);
         Stack.importModules.set(Stack.namespaceGlobalCount, interpreter.stack);
@@ -2758,8 +2756,8 @@ class JSEtimos {
         const fileName = "input";
         const filePath = extSystem.dirName() + "/" + fileName;
         const dumpAST = this.args.dumpAST;
-        const dumpASTFile = (_a = this.args.dumpFile) !== null && _a !== void 0 ? _a : filePath + ".ast.yml";
-        const dir = extSystem.dirName() + "/" + fileName.split("/").slice(0, -1).join("/");
+        const dumpASTFile = (_a = this.args.dumpFile) !== null && _a !== void 0 ? _a : fileName + ".ast.yml";
+        const dir = extSystem.dirName();
         Stack.reset();
         const lexer = new Lexer(text, dir, fileName);
         const parser = new Parser(lexer, new Stack(filePath, 0));

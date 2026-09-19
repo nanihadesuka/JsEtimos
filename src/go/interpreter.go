@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
-	"os"
 	"sort"
 	"strings"
 )
@@ -92,7 +91,7 @@ func (in *Interpreter) visit(node any) any {
 		in.stack.set(n.Name, n)
 		return jsUndefined
 	case *FunctionCall:
-		return in.executeFunction(in.stack.get(n.Name), n.Args)
+		return in.executeFunction(in.stack.get(n.Name), n.Args, false)
 	case *AnonymousFunction:
 		return in.scopedReturn(func() any { return in.visit(n.Block) })
 	case *SpreadListOp:
@@ -111,7 +110,7 @@ func (in *Interpreter) visit(node any) any {
 		return in.visitConditional(n)
 	case *ForLoopOp:
 		in.visit(n.Setup)
-		for looseEq(in.visit(n.RunCondition), true) {
+		for truthy(in.visit(n.RunCondition)) {
 			in.visit(n.Body)
 			in.visit(n.Increment)
 		}
@@ -144,13 +143,18 @@ func (in *Interpreter) visit(node any) any {
 	return node
 }
 
+// ReturnValue is thrown (panicked) by a return statement and carries the
+// returned value up to the function call
+type ReturnValue struct {
+	value any
+}
+
 func (in *Interpreter) visitReturnOp(node *ReturnOp) any {
-	// Throw ReturnOp so it can signal the
-	// capturing parent a return call has taken place
-	// but keep vising the child node so a final
-	// value can be found
-	node.Node = in.visit(node.Node)
-	panic(node)
+	// Throw the returned value so it can signal the
+	// capturing parent a return call has taken place.
+	// The AST node itself must not be modified, it
+	// runs again on the next call.
+	panic(&ReturnValue{in.visit(node.Node)})
 }
 
 func (in *Interpreter) visitNamedImportOp(node *NamedImportOp) any {
@@ -588,11 +592,9 @@ func (in *Interpreter) visitAccessMethodOp(node *AccessMethodOp) any {
 		case "isInfinite":
 			return math.IsInf(obj, 0)
 		case "isFinite":
-			// `object !== NaN` is always true in the original, so NaN counts as finite
-			return !math.IsInf(obj, 0)
+			return !math.IsInf(obj, 0) && !math.IsNaN(obj)
 		case "isNaN":
-			// `object === NaN` is always false in the original
-			return false
+			return math.IsNaN(obj)
 		case "is":
 			return "number"
 		case "rad":
@@ -643,7 +645,7 @@ func (in *Interpreter) visitAccessMethodOp(node *AccessMethodOp) any {
 		case "is":
 			return "dict"
 		}
-		in.error(fmt.Sprintf("Method '%s' not found in object type 'null': %s", node.Key, toStr(obj)))
+		in.error(fmt.Sprintf("Method '%s' not found in object type 'module': %s", node.Key, obj.PathFile))
 	}
 
 	if node.Key == "toString" {
@@ -707,15 +709,16 @@ func asArgs(v any) *List {
 func (in *Interpreter) visitCallOp(node *CallOp) any {
 	fun := in.visit(node.Func)
 	if isBaseFunction(fun) {
-		return in.executeFunction(fun, asArgs(node.Args))
+		return in.executeFunction(fun, asArgs(node.Args), false)
 	}
 	in.error(fmt.Sprintf("Object is not an function, can't execute a call. Got '%s' instead.", toStr(fun)))
 	return nil
 }
 
 func (in *Interpreter) visitPipeOp(pipe *PipeOp) any {
+	// Values flowing through the pipe are already evaluated
 	itemExec := func(fun any, arg any) any {
-		return in.executeFunction(fun, asArgs(arg))
+		return in.executeFunction(fun, asArgs(arg), true)
 	}
 
 	left := in.visit(pipe.Entry)
@@ -751,7 +754,7 @@ func (in *Interpreter) visitPipeOp(pipe *PipeOp) any {
 			}
 			left = newList(filtered)
 		default:
-			left = in.executeFunction(fun, args)
+			left = in.executeFunction(fun, args, true)
 		}
 	}
 
@@ -1013,8 +1016,13 @@ func (in *Interpreter) visitShortcircuitOp(node *ShortcircuitOp) any {
 	return nil
 }
 
-func (in *Interpreter) executeFunction(funValue any, args *List) (result any) {
-	evaluatedArgs := in.visitList(args)
+// argsEvaluated: the arguments are runtime values (not AST), visiting them again
+// would run anonymous functions and re-declare named ones
+func (in *Interpreter) executeFunction(funValue any, args *List, argsEvaluated bool) (result any) {
+	evaluatedArgs := newListEval(args.Nodes)
+	if !argsEvaluated {
+		evaluatedArgs = in.visitList(args)
+	}
 	currentScope := in.stack
 
 	fun, ok := funValue.(BaseFunction)
@@ -1043,8 +1051,8 @@ func (in *Interpreter) executeFunction(funValue any, args *List) (result any) {
 		in.stack.pop()
 		in.stack = currentScope
 		if recovered != nil {
-			if value, ok := recovered.(*ReturnOp); ok {
-				result = value.Node
+			if value, ok := recovered.(*ReturnValue); ok {
+				result = value.value
 				return
 			}
 			panic(recovered)
@@ -1133,8 +1141,8 @@ func (in *Interpreter) visitID(node *ID) any {
 func (in *Interpreter) returnCatcher(fn func() any) (result any) {
 	defer func() {
 		if recovered := recover(); recovered != nil {
-			if value, ok := recovered.(*ReturnOp); ok {
-				result = value.Node
+			if value, ok := recovered.(*ReturnValue); ok {
+				result = value.value
 				return
 			}
 			panic(recovered)
@@ -1145,14 +1153,13 @@ func (in *Interpreter) returnCatcher(fn func() any) (result any) {
 
 func (in *Interpreter) scopedReturn(fn func() any) any {
 	in.stack.push()
-	res := in.returnCatcher(fn)
-	in.stack.pop()
-	return res
+	defer in.stack.pop()
+	return in.returnCatcher(fn)
 }
 
 func (in *Interpreter) interpret(tree any, dumpAST bool, dumpFile string) any {
 	if dumpAST {
-		_ = os.WriteFile(dumpFile, []byte(jsonStringify(tree)), 0o644)
+		extSystem.writeFile(jsonStringify(tree), dumpFile, "")
 	}
 	return in.returnCatcher(func() any { return in.visit(tree) })
 }

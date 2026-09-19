@@ -1,0 +1,4 @@
+// Bug 2 (BUGS_AUDIT.MD): `printToFile` never writes anything
+// expect-file: tests/bugs/_printToFile_output.txt
+
+printToFile("written by printToFile", "tests/bugs/_printToFile_output.txt")

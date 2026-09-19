@@ -1,0 +1,11 @@
+// Bug 4 (BUGS_AUDIT.MD): printing a list or dict containing undefined/null crashes
+
+list = 1, undefined, null
+assert(list?toString == "1, undefined, null")
+assert("${list}" == "1, undefined, null")
+
+nested = (1, (undefined, 2))
+assert(nested?toString == "1, (undefined, 2)")
+
+dict = { a = undefined; b = null }
+assert(dict?toString == "{\n  a = undefined\n  b = null\n}")

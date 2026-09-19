@@ -1,0 +1,5 @@
+// Bug 11 (BUGS_AUDIT.MD): modules report errors as type 'null'
+// expect-output: Method 'toString' not found in object type 'module'
+
+import modules.sample
+sample?toString

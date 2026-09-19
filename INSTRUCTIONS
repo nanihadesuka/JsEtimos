@@ -20,7 +20,16 @@ Import files:
     JSEtimos file extension is *.jk
 
 Optional: If you made some changes on the jsetimos.ts file you will need to recompile again to js.
-tsc -b
+Needs the node type definitions next to it (npm install @types/node@14) and must use -p:
+the source has known type errors, so "tsc -b" refuses to write the output.
+tsc -p .
+
+Go implementation (src/go, needs Go 1.21 or newer):
+./build_go.sh           builds ./jsetimos (jsetimos.exe on Windows)
+./build_go.sh --test    builds and runs the unit and bug regression tests
+
+Bug regression tests (see BUGS_AUDIT.MD):
+tests/bugs/run.sh [node|go|both]
 
 If you want some syntax highlight when editing 
 jsetimos code you can use the kotlin highlighter

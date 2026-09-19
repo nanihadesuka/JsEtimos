@@ -97,7 +97,12 @@ func (e *ExtSystem) programArgs() ProgramArgs {
 	attributes := map[string]string{}
 	for _, item := range os.Args[1:] {
 		if strings.HasPrefix(item, "--") {
-			attributes[item[2:]] = item[2:]
+			// --flag or --name=value
+			if name, value, found := strings.Cut(item[2:], "="); found {
+				attributes[name] = value
+			} else {
+				attributes[item[2:]] = item[2:]
+			}
 		} else if strings.HasPrefix(item, "-") {
 			continue
 		} else {
@@ -182,13 +187,19 @@ func (j *JSEtimos) runText(text string, fileName string, filePath string) {
 	dumpAST := j.args.dumpAST
 	dumpASTFile := j.args.dumpFile
 	if dumpASTFile == "" {
-		dumpASTFile = filePath + ".ast.yml"
+		// Relative to the base directory, like any other written file
+		dumpASTFile = fileName + ".ast.yml"
 	}
 
+	// The lexer takes the directory and the bare file name separately,
+	// otherwise the relative directory ends up twice in the file path
 	parts := strings.Split(fileName, "/")
-	dir := extSystem.dirName() + "/" + strings.Join(parts[:len(parts)-1], "/")
+	dir := extSystem.dirName()
+	if relativeDir := strings.Join(parts[:len(parts)-1], "/"); relativeDir != "" {
+		dir += "/" + relativeDir
+	}
 
-	lexer := newLexer(text, dir, fileName)
+	lexer := newLexer(text, dir, parts[len(parts)-1])
 	parser := newParser(lexer, newStack(filePath, 0))
 	interpreter := newInterpreter(filePath, 0)
 	importModules[namespaceGlobalCount] = interpreter.stack

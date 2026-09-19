@@ -138,11 +138,12 @@ func (s *Stack) hasInSameRecord(id string) bool { return s.activeRecord.has(id) 
 
 func (s *Stack) set(id string, value any) { s.activeRecord.set(id, value) }
 
-// Note: sets the value on every record that already holds the name (as the TS version does)
+// Updates the nearest scope that holds the name
 func (s *Stack) setOnExisting(id string, value any) {
 	for i := len(s.stackRecordList) - 1; i > -1; i-- {
 		if s.stackRecordList[i].has(id) {
 			s.stackRecordList[i].set(id, value)
+			return
 		}
 	}
 }

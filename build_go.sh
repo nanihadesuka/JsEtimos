@@ -3,7 +3,8 @@
 #
 # Usage:
 #   ./build_go.sh          build ./jsetimos (./jsetimos.exe on Windows)
-#   ./build_go.sh --test   build, then run stdlib/lang_unit_test.jk
+#   ./build_go.sh --test   build, then run stdlib/lang_unit_test.jk and the bug
+#                          regression tests (tests/bugs)
 
 set -euo pipefail
 
@@ -22,4 +23,11 @@ if [[ "${1:-}" == "--test" ]]; then
         exit 1
     fi
     echo "Tests passed"
+
+    if ! bug_output="$(tests/bugs/run.sh go)"; then
+        echo "$bug_output"
+        echo "Bug regression tests failed"
+        exit 1
+    fi
+    echo "Bug regression tests passed"
 fi

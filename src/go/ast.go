@@ -268,7 +268,7 @@ func (l *List) toStringIdent(ident int) string {
 		case *List:
 			parts[i] = "(" + x.toStringIdent(ident+2) + ")"
 		default:
-			parts[i] = methodToString(v)
+			parts[i] = toStr(v)
 		}
 	}
 	return strings.Join(parts, ", ")
@@ -286,7 +286,7 @@ func (d *Dictionary) toStringIdent(ident int) string {
 		case *List:
 			return x.toStringIdent(disp)
 		}
-		return methodToString(v)
+		return toStr(v)
 	}
 
 	if len(keys) <= 0 {

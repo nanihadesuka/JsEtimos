@@ -1,0 +1,7 @@
+// Bug 8 (BUGS_AUDIT.MD): `it10`+ parameters are sorted as text
+
+x = 0:10 | { it2 + it10 }
+assert(x == 12)
+
+y = 0:11 | { it + it9 + it11 }
+assert(y == 20)
