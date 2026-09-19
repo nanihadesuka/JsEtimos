@@ -23,7 +23,7 @@ cd "$root"
 impls="${1:-both}"
 [[ "$impls" == "both" ]] && impls="node go"
 
-binary="./jsetimos$(go env GOEXE)"
+binary="build/jsetimos$(go env GOEXE)"
 if [[ " $impls " == *" go "* ]]; then
     ./build_go.sh > /dev/null || exit 1
 fi
@@ -33,7 +33,7 @@ failed=0
 
 for impl in $impls; do
     if [[ "$impl" == "node" ]]; then
-        cmd=(node jsetimos.js)
+        cmd=(node build/jsetimos.js)
     else
         cmd=("$binary")
     fi

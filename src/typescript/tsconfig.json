@@ -4,7 +4,7 @@
 		"sourceMap": true,
 		"downlevelIteration": true,
 		"target": "ES6",
-		"outDir": "../.."
+		"outDir": "../../build"
 	},
 	"files": ["jsetimos.ts"]
 }

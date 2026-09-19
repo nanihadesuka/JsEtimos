@@ -1,6 +1,6 @@
 /.vscode
-/jsetimos.js.map
-/jsetimos.exe
-/jsetimos
 *.ast.yml
 node_modules/
+# Build output: only jsetimos.js is committed (index.html / GitHub Pages loads it)
+/build/*
+!/build/jsetimos.js

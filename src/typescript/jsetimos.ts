@@ -89,9 +89,11 @@ class ExtSystem_NodeJs implements ExtSystem
         red: "\u001b[31;1m",
     }
 
+    // Base directory for programs, imports and written files: the directory
+    // the interpreter is run from (jsetimos.js itself lives in build/)
     dirName(): string
     {
-        return __dirname
+        return process.cwd()
     }
 
     programArgs(): ProgramArgs

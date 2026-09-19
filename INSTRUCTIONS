@@ -1,19 +1,21 @@
 Needs:
 * Node v14.6.0 >=
-* (optional, to rebuild jsetimos.js) npm; build_ts.sh installs the pinned
+* (optional, to rebuild build/jsetimos.js) npm; build_ts.sh installs the pinned
   typescript 3.8.3 (future versions add unwanted transpiled code) by itself
 
 To try:
 Open index.html in a browser.
 
+Run everything from the repository root (paths are relative to it).
+
 To run a file:
-node jsetimos.js fileName
+node build/jsetimos.js fileName
 
 To run in shell mode (REPL):
-node jsetimos.js
+node build/jsetimos.js
 
 To run from raw input (untested):
-node jsetimos.js --inputMode "print("hello")"
+node build/jsetimos.js --inputMode "print("hello")"
 
 Import files:
     Base dir is main file running directory.
@@ -21,13 +23,13 @@ Import files:
     then from the base dir (e.g. "import stdlib.math" works from tests/).
     JSEtimos file extension is *.jk
 
-TypeScript implementation (src/typescript, compiled into ./jsetimos.js):
+TypeScript implementation (src/typescript, compiled into build/jsetimos.js):
 If you made some changes on src/typescript/jsetimos.ts you need to recompile it.
-./build_ts.sh           builds ./jsetimos.js
+./build_ts.sh           builds build/jsetimos.js
 ./build_ts.sh --test    builds and runs the unit and bug regression tests
 
 Go implementation (src/go, needs Go 1.21 or newer):
-./build_go.sh           builds ./jsetimos (jsetimos.exe on Windows)
+./build_go.sh           builds build/jsetimos (build/jsetimos.exe on Windows)
 ./build_go.sh --test    builds and runs the unit and bug regression tests
 
 Bug regression tests (one file per fixed bug in tests/bugs):

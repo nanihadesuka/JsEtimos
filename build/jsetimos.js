@@ -41,8 +41,10 @@ class ExtSystem_NodeJs {
     formatColor(text, color) {
         return `${color}${text}${this.colors.reset}`;
     }
+    // Base directory for programs, imports and written files: the directory
+    // the interpreter is run from (jsetimos.js itself lives in build/)
     dirName() {
-        return __dirname;
+        return process.cwd();
     }
     programArgs() {
         const list = process.argv.slice(2);

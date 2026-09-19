@@ -10,8 +10,8 @@
 //
 // This file: command line entry point and host system access (node.js equivalent).
 //
-// Build (from the repository root): go build -C src/go -o ../../jsetimos.exe .
-// Run:   jsetimos fileName | jsetimos (shell mode) | jsetimos --inputMode "print(1)"
+// Build (from the repository root): ./build_go.sh, or go build -C src/go -o ../../build/jsetimos.exe .
+// Run:   build/jsetimos fileName | build/jsetimos (shell mode) | build/jsetimos --inputMode "print(1)"
 // Paths are resolved from the working directory, so run it from the repository root.
 
 package main

@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
-# Builds the Go implementation (src/go) into the repository root.
+# Builds the Go implementation (src/go) into build/.
 #
 # Usage:
-#   ./build_go.sh          build ./jsetimos (./jsetimos.exe on Windows)
+#   ./build_go.sh          build build/jsetimos (build/jsetimos.exe on Windows)
 #   ./build_go.sh --test   build, then run tests/lang_basic_coverage.jk and the bug
 #                          regression tests (tests/bugs)
 
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-binary="jsetimos$(go env GOEXE)"
+binary="build/jsetimos$(go env GOEXE)"
 
+mkdir -p "$root/build"
 go build -C "$root/src/go" -o "$root/$binary" .
 echo "Built $binary"
 

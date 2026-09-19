@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Compiles the TypeScript implementation (src/typescript) into ./jsetimos.js,
-# used by node (node jsetimos.js ...) and by index.html.
+# Compiles the TypeScript implementation (src/typescript) into build/jsetimos.js,
+# used by node (node build/jsetimos.js ...) and by index.html.
 #
 # Usage:
-#   ./build_ts.sh          build jsetimos.js
+#   ./build_ts.sh          build build/jsetimos.js
 #   ./build_ts.sh --test   build, then run tests/lang_basic_coverage.jk and the bug
 #                          regression tests (tests/bugs)
 #
@@ -21,18 +21,18 @@ fi
 
 # The source has known type errors (ES2019 APIs on an ES6 target). tsc still
 # writes the output, so only a missing output counts as a failure.
-rm -f "$root/jsetimos.js"
+rm -f "$root/build/jsetimos.js"
 (cd "$project" && npx --no-install tsc -p .) > /dev/null || true
-if [[ ! -f "$root/jsetimos.js" ]]; then
+if [[ ! -f "$root/build/jsetimos.js" ]]; then
     (cd "$project" && npx --no-install tsc -p .) || true
     echo "Build failed"
     exit 1
 fi
-echo "Built jsetimos.js"
+echo "Built build/jsetimos.js"
 
 if [[ "${1:-}" == "--test" ]]; then
     cd "$root"
-    output="$(node jsetimos.js tests/lang_basic_coverage.jk | grep -v "source-map-support" || true)"
+    output="$(node build/jsetimos.js tests/lang_basic_coverage.jk | grep -v "source-map-support" || true)"
     if [[ -n "$output" ]]; then
         echo "$output"
         echo "Tests failed"
