@@ -17,6 +17,8 @@ node jsetimos.js --inputMode "print("hello")"
 
 Import files:
     Base dir is main file running directory.
+    "import a.b" looks for a/b.jk next to the importing file first,
+    then from the base dir (e.g. "import stdlib.math" works from tests/).
     JSEtimos file extension is *.jk
 
 Optional: If you made some changes on the jsetimos.ts file you will need to recompile again to js.

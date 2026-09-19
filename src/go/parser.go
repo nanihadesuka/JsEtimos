@@ -701,15 +701,27 @@ func (p *Parser) importStatement() any {
 	name := list[len(list)-1]
 	fileName := name + ".jk"
 
-	absoluteDir := p.lexer.directory
-	if relativeDir != "" {
-		absoluteDir += "/" + relativeDir
+	// Modules are looked up next to the importing file first,
+	// then from the base directory (where the program was started)
+	importDir := func(baseDir string) string {
+		if relativeDir == "" {
+			return baseDir
+		}
+		return baseDir + "/" + relativeDir
+	}
+	absoluteDir := importDir(p.lexer.directory)
+	if !extSystem.existFile(absoluteDir + "/" + fileName) {
+		baseImportDir := importDir(extSystem.dirName())
+		if baseImportDir == absoluteDir || !extSystem.existFile(baseImportDir+"/"+fileName) {
+			tried := absoluteDir + "/" + fileName
+			if baseImportDir != absoluteDir {
+				tried += " or " + baseImportDir + "/" + fileName
+			}
+			p.error(fmt.Sprintf("Import '%s' doesn't exist. Failed to access file in %s.", relativeName, tried), jsLen(relativeName))
+		}
+		absoluteDir = baseImportDir
 	}
 	absolutePath := absoluteDir + "/" + fileName
-
-	if !extSystem.existFile(absolutePath) {
-		p.error(fmt.Sprintf("Import '%s' doesn't exist. Failed to access file in %s.", relativeName, absolutePath), jsLen(relativeName))
-	}
 
 	moduleAlias := name
 	if p.is(TK_AS) {

@@ -1,5 +1,5 @@
-import stdlib.lang_unit_test
-import stdlib.lang_unit_test as test1
+import tests.lang_basic_coverage
+import tests.lang_basic_coverage as test1
 import stdlib.math
 
 

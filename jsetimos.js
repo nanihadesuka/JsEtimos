@@ -1548,10 +1548,21 @@ class Parser {
         const relativeDir = list.slice(0, -1).join("/");
         const name = list[list.length - 1];
         const fileName = name + ".jk";
-        const absoluteDir = this.lexer.directory + (relativeDir == "" ? "" : "/" + relativeDir);
+        // Modules are looked up next to the importing file first,
+        // then from the base directory (where the program was started)
+        const importDir = (baseDir) => baseDir + (relativeDir == "" ? "" : "/" + relativeDir);
+        let absoluteDir = importDir(this.lexer.directory);
+        if (!extSystem.existFile(absoluteDir + "/" + fileName)) {
+            const baseImportDir = importDir(extSystem.dirName());
+            if (baseImportDir == absoluteDir || !extSystem.existFile(baseImportDir + "/" + fileName)) {
+                const tried = baseImportDir == absoluteDir ?
+                    `${absoluteDir}/${fileName}` :
+                    `${absoluteDir}/${fileName} or ${baseImportDir}/${fileName}`;
+                this.error(`Import '${relativeName}' doesn't exist. Failed to access file in ${tried}.`, relativeName.length);
+            }
+            absoluteDir = baseImportDir;
+        }
         const absolutePath = absoluteDir + "/" + fileName;
-        if (!extSystem.existFile(absolutePath))
-            this.error(`Import '${relativeName}' doesn't exist. Failed to access file in ${absolutePath}.`, relativeName.length);
         let moduleAlias = name;
         if (this.is(TokenType.AS)) {
             this.eat(TokenType.AS);

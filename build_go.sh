@@ -3,7 +3,7 @@
 #
 # Usage:
 #   ./build_go.sh          build ./jsetimos (./jsetimos.exe on Windows)
-#   ./build_go.sh --test   build, then run stdlib/lang_unit_test.jk and the bug
+#   ./build_go.sh --test   build, then run tests/lang_basic_coverage.jk and the bug
 #                          regression tests (tests/bugs)
 
 set -euo pipefail
@@ -16,7 +16,7 @@ echo "Built $binary"
 
 if [[ "${1:-}" == "--test" ]]; then
     cd "$root"
-    output="$("./$binary" stdlib/lang_unit_test.jk)"
+    output="$("./$binary" tests/lang_basic_coverage.jk)"
     if [[ -n "$output" ]]; then
         echo "$output"
         echo "Tests failed"
