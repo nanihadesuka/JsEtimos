@@ -1,4 +1,5 @@
 import math
+import math as mathAlias
 
 // Test assignment
 do {
@@ -471,12 +472,14 @@ do {
     assert(number?floor == 3)
     assert(number?abs == 3.4)
     assert(number?sign == 1)
-    assert(number?cos == -0.9667981925794611)
-    assert(number?sin == -0.2555411020268312)
-    assert(number?tan == 0.26431690086742515)
-    assert(number?cosh == 14.998736658678668)
-    assert(number?sinh == 14.965363388718343)
-    assert(number?tanh == 0.9977749279342794)
+    // Floating point results can differ in the last digits between runtimes
+    epsilon = 0.000000000001
+    assert((number?cos - -0.9667981925794611)?abs < epsilon)
+    assert((number?sin - -0.2555411020268312)?abs < epsilon)
+    assert((number?tan - 0.26431690086742515)?abs < epsilon)
+    assert((number?cosh - 14.998736658678668)?abs < epsilon)
+    assert((number?sinh - 14.965363388718343)?abs < epsilon)
+    assert((number?tanh - 0.9977749279342794)?abs < epsilon)
     assert(number?negative == -3.4)
     assert(-3.4?negative == 3.4)
     assert(number?is == "number")
@@ -517,4 +520,273 @@ do {
 
     x = 0:0.25:10 | map { it?floor, it } | ?group?toList | map { k,v -> v?sum } | ?first
     assert(x == 1.5)
+}
+
+// Test increment and decrement operators
+do {
+    a = 5
+    b = a++
+    assert(b == 5 and a == 6)
+    c = ++a
+    assert(c == 7 and a == 7)
+    d = a--
+    assert(d == 7 and a == 6)
+    e = --a
+    assert(e == 5 and a == 5)
+}
+
+// Test compound operators on lists, strings and numbers
+do {
+    list = 1,2
+    list += 3
+    assert(list == (1,2,3))
+    list += (4,5)
+    assert(list == (1,2,3,4,5))
+
+    rep = 1,2
+    rep *= 2
+    assert(rep == (1,2,1,2))
+
+    text = "ab"
+    text += "cd"
+    assert(text == "abcd")
+
+    n = 10
+    n -= 4
+    n /= 3
+    assert(n == 2)
+    n **= 3
+    assert(n == 8)
+}
+
+// Test short-circuit logic
+do {
+    calls = 0
+    fun touch()
+    {
+        calls += 1
+        true
+    }
+
+    r1 = false and touch()
+    r2 = true or touch()
+    assert(calls == 0)
+    r3 = true and touch()
+    assert(calls == 1)
+    assert(r1 == false and r2 == true and r3 == true)
+
+    assert((1 and "x") == true)
+    assert((0 or "") == false)
+    assert(not 0)
+    assert(not "")
+    assert(not undefined)
+    assert(not null)
+}
+
+// Test type coercion
+do {
+    assert("3" + 4 == "34")
+    assert(3 + "4" == "34")
+    assert("6" * "7" == 42)
+    assert("10" - 4 == 6)
+    assert(true + true == 2)
+    assert(null + 1 == 1)
+    assert((undefined + 1)?is == "number")
+    assert("b" > "a")
+    assert("10" < "9")
+    assert(10 > "9")
+    assert("5" == 5)
+    assert(null == undefined)
+    assert(null != 0)
+    assert((1,2) == "1, 2")
+}
+
+// Test number built-in methods (extra)
+do {
+    assert(16?sqrt == 4)
+    assert(-2?isNegative)
+    assert(0?isPositive)
+    assert((1/0)?isInfinite)
+    assert(5?isInfinite == false)
+    assert(180?rad == 1?pi)
+    assert(2?pi == 2 * 1?pi)
+    assert(-7.5?abs == 7.5)
+    assert(2.5?round == 3)
+    assert(-2.5?round == -2)
+    assert(2.7?trunc == 2)
+    assert(-2.7?trunc == -2)
+    assert(-2.2?floor == -3)
+    assert(-2.2?ceil == -2)
+    assert(0?toBool == false)
+    assert(12?toString == "12")
+    assert(0.5?toString == "0.5")
+    assert(-5?sign == -1)
+    assert(4?toList == (0,1,2,3))
+    assert(5?randomInt <= 5)
+    assert(3?random < 3)
+}
+
+// Test string built-in methods (extra)
+do {
+    assert("abc"?toList?size == 3)
+    assert("a\nb\nc"?lines == ("a","b","c"))
+    assert("   "?isBlank)
+    assert(""?isEmpty)
+    assert("x"?isNotEmpty)
+    assert("hello"[1] == "e")
+    assert("hello"[1,-1] == "ello")
+    assert(""?hashCode == 0)
+    assert("a"?hashCode == 97)
+    assert("3.5kg"?toNumber == 3.5)
+    assert("ab" * 0 == "")
+
+    s = "ab"
+    assert(s + 1 + 2 == "ab12")
+    assert(1 + 2 + s == "3ab")
+}
+
+// Test list built-in methods (extra)
+do {
+    list = 4,1,3
+    assert(list?hypot == 26?sqrt)
+    assert(list?average == 8/3)
+    assert(list?sort?first == 1)
+    assert(list == (4,1,3))
+
+    nested = (1,(2,(3,4)))
+    assert(nested?flat?size == 3)
+    assert(nested?flat[2] == (3,4))
+
+    assert((1,2,3)?randomItem >= 1)
+    assert((5,)?size == 1)
+    assert(((1,"a"),(2,"b"))?toDict.2 == "b")
+
+    groups = (("x",1),("y",2),("x",3))?group
+    assert(groups.x == (1,3))
+    assert(groups.y?size == 1)
+
+    assert(-(1,2) == (-1,-2))
+    assert(not (1,0) == (false,true))
+    assert((1,2) * 2 == (1,2,1,2))
+    assert(0 + (1,2) == (0,1,2))
+}
+
+// Test dictionary (extra)
+do {
+    d = {
+        name = "box"
+        size = 3
+        10 = "ten"
+        1 = "one"
+        inner = { deep = { value = 42 } }
+        add = fun { a, b -> a + b }
+    }
+
+    // Integer keys always come first, in ascending order
+    assert(d?keys == (1, 10, "name", "size", "inner", "add"))
+    assert(d.inner.deep.value == 42)
+    assert(d.add(2, 3) == 5)
+    assert(d.missing == undefined)
+    assert(d?toList[0] == (1, "one"))
+    assert({}?size == 0)
+    assert({ a = 1 }?toString == "{\n  a = 1\n}")
+    assert((1,(2,3))?toString == "1, (2, 3)")
+
+    e = { list = 1,2; flag = true }
+    assert(e.list?size == 2 and e.flag)
+}
+
+// Test functions (extra)
+do {
+    fun add3(a, b, c) { a + b + c }
+    assert(add3(1, 2, 3) == 6)
+
+    fun multiline(
+        a,
+        b
+    ) {
+        a * b
+    }
+    assert(multiline(3, 4) == 12)
+
+    fun variadic() { arguments?size }
+    assert((1, 2, 3, 4 | variadic) == 4)
+
+    fun pick(which)
+    {
+        if which == 1 "one"
+        elif which == 2 "two"
+        else "many"
+    }
+    assert(pick(1) == "one")
+    assert(pick(2) == "two")
+    assert(pick(9) == "many")
+
+    fun fib(n) { if n < 2 n else fib(n - 1) + fib(n - 2) }
+    assert(fib(10) == 55)
+
+    counter = 0
+    fun bump() { counter += 1 }
+    bump()
+    bump()
+    assert(counter == 2)
+}
+
+// Test pipes (extra)
+do {
+    fun double(x) { x * 2 }
+    assert((5 | double | double) == 20)
+    assert(((1,2,3) | map double) == (2,4,6))
+    assert(((1,2,3,4) | filter { it > 1 } | map { it * 10 } | math.sum) == 90)
+
+    pairs = (1,2),(3,4)
+    assert((pairs | map { a, b -> a + b }) == (3,7))
+    assert((10 | { it / 2 } | { it + 1 }) == 6)
+    assert((("a","b") | { it + it1 }) == "ab")
+    assert((0:4 | map { it * it } | ?last) == 16)
+    assert((3 | ?toList) == (0,1,2))
+}
+
+// Test ranges (extra)
+do {
+    assert(3:1 == (3,2,1))
+    assert(0:1:3 == (0,1,2,3))
+    assert(0:2:5 == (0,2,4))
+    assert(-2:2 == (-2,-1,0,1,2))
+    assert((1:5)?sum == 15)
+}
+
+// Test multiple assignment and nested list access
+do {
+    a, b = 1, 2
+    a, b = b, a
+    assert(a == 2 and b == 1)
+
+    first, second, third = 7, 8, 9
+    assert(first + second + third == 24)
+
+    grid = (1,2),(3,4)
+    assert(grid[1][0] == 3)
+    assert(grid[-1][-1] == 4)
+    assert(grid?flat[1,3] == (2,3))
+
+    x, y = grid[0]
+    assert(x == 1 and y == 2)
+}
+
+// Test comments
+do {
+    /* block comment */ value = 1 // line comment
+    /* multi
+       line */
+    assert(value == 1)
+}
+
+// Test module alias
+do {
+    assert(mathAlias.pi == math.pi)
+    assert(mathAlias?keys == math?keys)
+    assert(mathAlias?is == "dict")
+    assert((1,5,3 | mathAlias.max) == 5)
+    assert(mathAlias.clamp(20, 0, 10) == 10)
 }
