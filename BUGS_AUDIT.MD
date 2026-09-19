@@ -1,9 +1,9 @@
 # Bugs audit
 
-Bugs found in the original TypeScript interpreter (`jsetimos.ts`) while porting it to Go (`jsetimos.go`).
+Bugs found in the original TypeScript interpreter (`jsetimos.ts`) while porting it to Go (`src/go/`).
 
 Every entry marked **Verified** was reproduced by running the original with node (`node jsetimos.js ...`).
-The **Go port** line says whether `jsetimos.go` keeps the bug (so both behave the same) or differs.
+The **Go port** line says whether the Go port keeps the bug (so both behave the same) or differs.
 
 ## Summary
 
