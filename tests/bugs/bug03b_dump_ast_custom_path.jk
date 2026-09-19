@@ -1,4 +1,4 @@
-// Bug 3 (BUGS_AUDIT.MD): `--dumpFile` can't be given a path
+// Bug 3: `--dumpFile` can't be given a path
 // args: --dumpAST --dumpFile=tests/bugs/_custom_dump.ast.yml
 // expect-file: tests/bugs/_custom_dump.ast.yml
 

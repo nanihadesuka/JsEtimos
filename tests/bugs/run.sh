@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs the regression tests for the bugs listed in BUGS_AUDIT.MD.
+# Runs the regression tests for fixed interpreter bugs (one tests/bugs/bug*.jk file per bug).
 #
 # Usage: tests/bugs/run.sh [node|go|both]   (default: both)
 #

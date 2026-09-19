@@ -1,4 +1,4 @@
-// Bug 7 (BUGS_AUDIT.MD): `for` loop condition must be loosely `== true`
+// Bug 7: `for` loop condition must be loosely `== true`
 
 count = 0
 for i = 3; i; i-- { count += 1 }

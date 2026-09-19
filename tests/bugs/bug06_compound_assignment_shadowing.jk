@@ -1,4 +1,4 @@
-// Bug 6 (BUGS_AUDIT.MD): compound assignment updates every scope with that name
+// Bug 6: compound assignment updates every scope with that name
 
 x = 10
 fun shadow() {

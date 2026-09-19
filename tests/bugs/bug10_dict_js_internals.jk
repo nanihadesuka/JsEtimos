@@ -1,4 +1,4 @@
-// Bug 10 (BUGS_AUDIT.MD): dictionary access exposes JavaScript internals
+// Bug 10: dictionary access exposes JavaScript internals
 
 d = { a = 1 }
 assert(d.constructor == undefined)

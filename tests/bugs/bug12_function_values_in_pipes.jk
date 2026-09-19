@@ -1,4 +1,4 @@
-// Bug 12 (BUGS_AUDIT.MD): function values can't be passed through pipes as plain values
+// Bug 12: function values can't be passed through pipes as plain values
 
 fun double(v) { v * 2 }
 fun apply(fn, value) { fn(value) }

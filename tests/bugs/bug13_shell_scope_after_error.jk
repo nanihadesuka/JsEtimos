@@ -1,4 +1,4 @@
-// Bug 13 (BUGS_AUDIT.MD): a runtime error inside `do { }` leaves an extra scope pushed
+// Bug 13: a runtime error inside `do { }` leaves an extra scope pushed
 // mode: shell
 // expect-output: secret=0
 secret = 0

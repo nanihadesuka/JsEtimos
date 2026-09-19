@@ -1,4 +1,4 @@
-// Bug 5 (BUGS_AUDIT.MD): `?isNaN` is always false, `?isFinite` is true for NaN
+// Bug 5: `?isNaN` is always false, `?isFinite` is true for NaN
 
 nan = 0/0
 assert(nan?isNaN)

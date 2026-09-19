@@ -1,4 +1,4 @@
-// Bug 9 (BUGS_AUDIT.MD): `?group` crashes on keys like `toString`
+// Bug 9: `?group` crashes on keys like `toString`
 
 groups = (("toString", 1), ("constructor", 2), ("toString", 3))?group
 assert(groups?keys == ("toString", "constructor"))

@@ -1,4 +1,4 @@
-// Bug 1 (BUGS_AUDIT.MD): `return` caches the first value it returns
+// Bug 1: `return` caches the first value it returns
 
 fun double(a) { return a * 2 }
 assert(double(1) == 2)

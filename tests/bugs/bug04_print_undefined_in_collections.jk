@@ -1,4 +1,4 @@
-// Bug 4 (BUGS_AUDIT.MD): printing a list or dict containing undefined/null crashes
+// Bug 4: printing a list or dict containing undefined/null crashes
 
 list = 1, undefined, null
 assert(list?toString == "1, undefined, null")

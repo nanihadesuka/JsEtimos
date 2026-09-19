@@ -1,4 +1,4 @@
-// Bug 15 (BUGS_AUDIT.MD): error locations repeat the directory of files outside the root
+// Bug 15: error locations repeat the directory of files outside the root
 // expect-output: tests/bugs/bug15_error_location_path.jk:5:
 // reject-output: tests/bugs/tests/bugs/
 
