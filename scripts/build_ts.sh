@@ -3,16 +3,16 @@
 # used by node (node build/jsetimos.js ...) and by index.html.
 #
 # Usage:
-#   ./build_ts.sh          build build/jsetimos.js
-#   ./build_ts.sh --test   build, then run tests/lang_basic_coverage.jk and the bug
-#                          regression tests (tests/bugs)
+#   scripts/build_ts.sh          build build/jsetimos.js
+#   scripts/build_ts.sh --test   build, then run tests/lang_basic_coverage.jk and the bug
+#                                regression tests (tests/bugs)
 #
 # Uses the pinned TypeScript 3.8.3 (newer versions change the generated code),
 # installed on first use into src/typescript/node_modules.
 
 set -euo pipefail
 
-root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 project="$root/src/typescript"
 
 if [[ ! -d "$project/node_modules" ]]; then

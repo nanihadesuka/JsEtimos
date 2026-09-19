@@ -12,7 +12,7 @@ Run every command from the repository root: program files, imports and written f
 ## Requirements
 
 - **Node.js** 14.6 or newer, to run `build/jsetimos.js`.
-- **npm**, only to rebuild `build/jsetimos.js`. `build_ts.sh` installs the pinned TypeScript 3.8.3 by itself (newer versions change the generated code).
+- **npm**, only to rebuild `build/jsetimos.js`. `scripts/build_ts.sh` installs the pinned TypeScript 3.8.3 by itself (newer versions change the generated code).
 - **Go** 1.21 or newer, only for the Go implementation.
 - **bash** for the scripts (on Windows: Git Bash).
 
@@ -50,19 +50,19 @@ See [language.md](language.md#imports) for the import syntax.
 After changing `src/typescript/jsetimos.ts`:
 
 ```
-./build_ts.sh           # builds build/jsetimos.js
-./build_ts.sh --test    # builds, then runs the tests on node
+scripts/build_ts.sh           # builds build/jsetimos.js
+scripts/build_ts.sh --test    # builds, then runs the tests on node
 ```
 
 `build/jsetimos.js` is committed, because `index.html` (and GitHub Pages) loads it. Everything else in `build/` is ignored by git.
 
-The source has known type errors (ES2019 APIs such as `flatMap` on an ES6 target). The TypeScript compiler still writes the output; `build_ts.sh` only fails if no output is written.
+The source has known type errors (ES2019 APIs such as `flatMap` on an ES6 target). The TypeScript compiler still writes the output; `scripts/build_ts.sh` only fails if no output is written.
 
 ### Go
 
 ```
-./build_go.sh           # builds build/jsetimos (build/jsetimos.exe on Windows)
-./build_go.sh --test    # builds, then runs the tests on the Go binary
+scripts/build_go.sh           # builds build/jsetimos (build/jsetimos.exe on Windows)
+scripts/build_go.sh --test    # builds, then runs the tests on the Go binary
 ```
 
 ## Tests
@@ -74,12 +74,14 @@ The source has known type errors (ES2019 APIs such as `flatMap` on an ES6 target
 
 A passing test file prints nothing. A failing `assert` prints `FAILED ASSERT` with the expression and its location.
 
-`./build_ts.sh --test` and `./build_go.sh --test` run both test sets for their implementation.
+`scripts/build_ts.sh --test` and `scripts/build_go.sh --test` run both test sets for their implementation.
 
 ## Development helpers
 
-- `run.sh` reruns `playground.jk` on every change (needs [nodemon](https://nodemon.io/)).
-- `run_db.sh` does the same with `--dumpAST`.
+All scripts are in `scripts/` and are run from the repository root.
+
+- `scripts/watch_playground.sh` reruns `playground.jk` with node on every change (needs [nodemon](https://nodemon.io/)).
+- `scripts/watch_playground_ast.sh` does the same with `--dumpAST`.
 
 ## Editor support
 

@@ -25,7 +25,7 @@ impls="${1:-both}"
 
 binary="build/jsetimos$(go env GOEXE)"
 if [[ " $impls " == *" go "* ]]; then
-    ./build_go.sh > /dev/null || exit 1
+    scripts/build_go.sh > /dev/null || exit 1
 fi
 
 passed=0

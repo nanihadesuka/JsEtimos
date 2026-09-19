@@ -2,13 +2,13 @@
 # Builds the Go implementation (src/go) into build/.
 #
 # Usage:
-#   ./build_go.sh          build build/jsetimos (build/jsetimos.exe on Windows)
-#   ./build_go.sh --test   build, then run tests/lang_basic_coverage.jk and the bug
-#                          regression tests (tests/bugs)
+#   scripts/build_go.sh          build build/jsetimos (build/jsetimos.exe on Windows)
+#   scripts/build_go.sh --test   build, then run tests/lang_basic_coverage.jk and the bug
+#                                regression tests (tests/bugs)
 
 set -euo pipefail
 
-root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 binary="build/jsetimos$(go env GOEXE)"
 
 mkdir -p "$root/build"

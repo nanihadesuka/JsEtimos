@@ -1,7 +1,7 @@
 {
   "name": "jsetimos-typescript",
   "private": true,
-  "description": "Build tools for the TypeScript implementation. Run ../../build_ts.sh to compile jsetimos.js into the repository root.",
+  "description": "Build tools for the TypeScript implementation. Run scripts/build_ts.sh (from the repository root) to compile build/jsetimos.js.",
   "scripts": {
     "build": "tsc -p ."
   },
