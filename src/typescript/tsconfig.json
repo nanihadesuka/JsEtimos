@@ -3,6 +3,8 @@
 		"noImplicitAny": false,
 		"sourceMap": true,
 		"downlevelIteration": true,
-		"target": "ES6"
-	}
+		"target": "ES6",
+		"outDir": "../.."
+	},
+	"files": ["jsetimos.ts"]
 }

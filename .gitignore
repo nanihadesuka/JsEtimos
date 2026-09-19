@@ -3,3 +3,4 @@
 /jsetimos.exe
 /jsetimos
 *.ast.yml
+node_modules/

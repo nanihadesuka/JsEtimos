@@ -9,5 +9,5 @@
 		"checkJs": false,
 		"noStrictGenericChecks": true
 	},
-	"files": ["jsetimos.ts"]
+	"files": ["../jsetimos.ts"]
 }

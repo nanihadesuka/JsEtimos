@@ -1,7 +1,7 @@
 Needs:
 * Node v14.6.0 >=
-* (optional) typescript 3.8.3 (future versions add unwanted transpiled code)
-  npm install -g typescript@3.8.3
+* (optional, to rebuild jsetimos.js) npm; build_ts.sh installs the pinned
+  typescript 3.8.3 (future versions add unwanted transpiled code) by itself
 
 To try:
 Open index.html in a browser.
@@ -21,10 +21,10 @@ Import files:
     then from the base dir (e.g. "import stdlib.math" works from tests/).
     JSEtimos file extension is *.jk
 
-Optional: If you made some changes on the jsetimos.ts file you will need to recompile again to js.
-Needs the node type definitions next to it (npm install @types/node@14) and must use -p:
-the source has known type errors, so "tsc -b" refuses to write the output.
-tsc -p .
+TypeScript implementation (src/typescript, compiled into ./jsetimos.js):
+If you made some changes on src/typescript/jsetimos.ts you need to recompile it.
+./build_ts.sh           builds ./jsetimos.js
+./build_ts.sh --test    builds and runs the unit and bug regression tests
 
 Go implementation (src/go, needs Go 1.21 or newer):
 ./build_go.sh           builds ./jsetimos (jsetimos.exe on Windows)
