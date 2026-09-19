@@ -26,9 +26,11 @@ The interpreter can be run in three modes:
 - shell mode (REPL)
 - from a string given in the command line.  
 
-For more info for how to run it read the INSTRUCTIONS file.
+For more info for how to run it read [docs/building.md](docs/building.md), and see [docs/language.md](docs/language.md) for the language reference.
 
 As the implementation has been done in Typescript it can run on the browser, node.js and even on the game [0 A.D](https://play0ad.com/) which uses the spidermonkey js engine (nice game btw, check it out :-> )
+
+There is also a Go implementation (`src/go`) with the same behaviour, built as a standalone command line binary.
 
 ### Notice
 This is a toy language, the implementation is still missing many things, has some bugs and inconsistencies and is not optimized so be gente with it :)
